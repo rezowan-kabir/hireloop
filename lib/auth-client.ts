@@ -6,5 +6,3 @@ export const authClient = createAuthClient({
 export const { signIn, signUp, useSession } = createAuthClient()
 
 
-// now i want to create the navber using shadcn. 
-// make sure navbar is responsive and follows the style
