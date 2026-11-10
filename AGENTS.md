@@ -26,11 +26,12 @@ Recruiting/hiring web app built on Next.js 16 (App Router) + better-auth + Mongo
 
 ## Auth (better-auth) — three wired pieces
 
-- Server: `lib/auth.ts` — better-auth with `@better-auth/mongo-adapter`. Connection string is **hardcoded** to `mongodb://localhost:27017`, database `hireloopdb` — a local MongoDB must be running or every `/api/auth/*` request fails. Email/password enabled; Google OAuth provider expects `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`.
-- Client: `lib/auth-client.ts` (`better-auth/react`).
+- Server: `lib/auth.ts` — better-auth with `@better-auth/mongo-adapter`. Mongo URI is **hardcoded** to `mongodb://localhost:27017/database` and the DB name is fixed by `client.db('hireloopdb')` — a local MongoDB must be running or every `/api/auth/*` request fails. Email/password enabled; Google OAuth reads `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`.
+- Client: `lib/auth-client.ts` (`better-auth/react`) — exports `authClient`, `signIn`, `signUp`, `useSession`.
 - Routes: `app/api/auth/[...all]/route.ts` (`toNextJsHandler`) serves all auth endpoints — don't create per-endpoint auth routes.
+- UI is hand-rolled: `app/(auth)/sign-in/page.tsx` is a plain client form calling `signIn.email(...)`; better-auth's mounted sign-in component is not used.
 
 ## Env / secrets
 
-- `.env` holds `BETTER_AUTH_SECRET` / `BETTER_AUTH_URL` and is **committed to git** (tracked before `.gitignore` added `.env*`, so ignore rules don't shield it). Don't add real secrets to it; don't rely on it being ignored.
-- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` are referenced in `lib/auth.ts` via `as string` but are currently absent from `.env` — the Google provider config is effectively `undefined` until they're added.
+- `.env` exists locally with `BETTER_AUTH_SECRET` / `BETTER_AUTH_URL`. It is **not** in git (never tracked) and `.gitignore`'s `.env*` covers it — a fresh clone has no `.env` and auth fails until one is created.
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` are referenced in `lib/auth.ts` via `as string` but are absent from `.env` — the Google provider config is effectively `undefined` until they're added.

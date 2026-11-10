@@ -54,15 +54,18 @@ export function Navbar() {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                className="text-sm font-medium text-indigo-400 hover:bg-white/5 hover:text-indigo-300"
+              <Link
+                href="/sign-in"
+                className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
               >
                 Sign In
-              </Button>
-              <Button className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 hover:from-blue-500 hover:to-indigo-500">
+              </Link>
+              <Link
+                href="/sign-up"
+                className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition-opacity hover:opacity-90"
+              >
                 Get Started
-              </Button>
+              </Link>
             </div>
           </div>
 
@@ -100,19 +103,20 @@ export function Navbar() {
               ))}
             </ul>
             <div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4">
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-indigo-400 hover:bg-white/10 hover:text-indigo-300"
+              <Link
+                href="/sign-in"
+                className="w-full rounded-md px-4 py-2 text-left text-indigo-400 hover:bg-white/10 hover:text-indigo-300"
                 onClick={() => setOpen(false)}
               >
                 Sign In
-              </Button>
-              <Button
-                className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500"
+              </Link>
+              <Link
+                href="/sign-up"
+                className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-center text-sm font-medium text-white shadow-lg shadow-indigo-500/20 hover:from-blue-500 hover:to-indigo-500"
                 onClick={() => setOpen(false)}
               >
                 Get Started
-              </Button>
+              </Link>
             </div>
           </div>
         )}
