@@ -123,7 +123,11 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* Page canvas is near-black to match the hero (#010103). The shadcn
+       light --background token (white) would show as white strips above/around
+       the transparent navbar frame; .dark tokens are never activated. */
+    background-color: #010103;
+    color: #f5f5f5;
   }
   html {
     @apply font-sans;

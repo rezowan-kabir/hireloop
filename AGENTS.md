@@ -29,7 +29,7 @@ Recruiting/hiring web app built on Next.js 16 (App Router) + better-auth + Mongo
 - Server: `lib/auth.ts` — better-auth with `@better-auth/mongo-adapter`. Mongo URI is **hardcoded** to `mongodb://localhost:27017/database` and the DB name is fixed by `client.db('hireloopdb')` — a local MongoDB must be running or every `/api/auth/*` request fails. Email/password enabled; Google OAuth reads `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`.
 - Client: `lib/auth-client.ts` (`better-auth/react`) — exports `authClient`, `signIn`, `signUp`, `useSession`.
 - Routes: `app/api/auth/[...all]/route.ts` (`toNextJsHandler`) serves all auth endpoints — don't create per-endpoint auth routes.
-- UI is hand-rolled: `app/(auth)/sign-in/page.tsx` is a plain client form calling `signIn.email(...)`; better-auth's mounted sign-in component is not used.
+- UI is hand-rolled: `app/(auth)/sign-in` and `app/(auth)/sign-up` are plain client forms that link to each other — their handlers only collect form data as placeholders; wire them to `lib/auth-client` later. better-auth's mounted components are not used.
 
 ## Env / secrets
 

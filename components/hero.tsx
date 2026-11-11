@@ -145,17 +145,28 @@ export function Hero() {
 
       {/* Globe visual + overlay + stats */}
       <div className="relative mx-auto mt-12 max-w-6xl">
-        <div className="relative aspect-[16/9] min-h-[320px] w-full overflow-hidden sm:min-h-[420px] lg:min-h-[580px]">
+        {/*
+          The globe art is a portrait image (1440x1882) whose blue arc tops out
+          at ~37% height and sphere at ~44%. Anchor it bottom-left/center at a
+          fixed width per breakpoint so the whole sphere + arc render without
+          being zoom-cropped; the container clips the magenta top third.
+        */}
+        <div className="relative h-[360px] overflow-hidden sm:h-[520px] md:h-[620px] lg:h-[740px]">
           <Image
             src={globe}
             alt=""
             aria-hidden
             priority
-            className="absolute inset-0 h-full w-full object-cover object-bottom select-none opacity-80"
+            className="absolute bottom-0 left-1/2 h-auto w-[440px] max-w-none -translate-x-1/2 select-none opacity-80 sm:w-[640px] md:w-[760px] lg:w-[900px]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#010103] via-transparent to-transparent" />
+          {/* Fade the image into the section at both edges so the crop never shows a hard cut */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(to_bottom,#010103_0%,rgba(1,1,3,0)_16%,rgba(1,1,3,0)_70%,#010103_100%)]"
+          />
 
-          <p className="absolute inset-x-0 top-[28%] mx-auto max-w-[650px] px-6 text-center text-xl font-semibold tracking-tight text-white/90 sm:text-2xl md:top-[40%] md:text-4xl lg:text-[40px] lg:leading-[1.2]">
+          {/* Sits on the sphere's dark night side (below its lit continents), above the stat cards */}
+          <p className="absolute inset-x-0 top-[52%] mx-auto max-w-[650px] px-6 text-center text-xl font-semibold tracking-tight text-white/90 sm:text-2xl md:top-[50%] md:text-4xl lg:top-[54%] lg:text-[40px] lg:leading-[1.2]">
             Assisting over <span className="text-violet-400">15,000</span> job
             seekers find their dream positions.
           </p>
@@ -166,4 +177,3 @@ export function Hero() {
     </section>
   );
 }
-
