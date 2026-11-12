@@ -5,21 +5,30 @@ import Link from "next/link";
 import type { FormEvent } from "react";
 
 export default function SignUpPage() {
-  // Placeholder: collects the form data only.
-  // TODO: integrate auth later — e.g. signUp.email({ name, email, password }) from "@/lib/auth-client".
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  //TODO: Form submit hole ei function-ti kaj korbe
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.currentTarget));
-    console.log("sign-up form data:", data);
-  }
-  const handleSignUp = async () =>{
+
+    //* Form theke data gulo niye nicchi
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    //! Better-auth diye sign up call korlam
+    //? Better-auth diye sign up call korlam
     const { data, error } = await authClient.signUp.email({
-      name: "John Doe", // required, The name of the user.
-      email: "john.doe@example.com", // required, The email address of the user.
-      password: "password1234", // required, The password of the user. It should be at least 8 characters long and max 128 by default.
-      image: "https://example.com/image.png", // An optional profile image of the user.
-      callbackURL: "https://example.com/callback", // An optional URL to redirect to after the user signs up.
+      name,
+      email,
+      password,
+      callbackURL: "/", // Sign up-er por kothay redirect hobe
     });
+
+    if (error) {
+      console.error("Sign up error:", error.message);
+    } else {
+      console.log("Sign up successful:", data);
+    }
   }
 
   return (
@@ -30,6 +39,7 @@ export default function SignUpPage() {
           Join HireLoop and start finding your dream job.
         </p>
 
+        {/* Form-er modhe handleSubmit set kora hoyeche */}
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           <label className="block space-y-2 text-sm font-medium">
             Name
@@ -74,6 +84,7 @@ export default function SignUpPage() {
 
         <p className="mt-6 text-center text-sm text-zinc-400">
           Already have an account?{" "}
+          {/* Link theke onSubmit remove kore dewa hoyeche */}
           <Link
             href="/sign-in"
             className="font-medium text-indigo-400 transition-colors hover:text-indigo-300"
