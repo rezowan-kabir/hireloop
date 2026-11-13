@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/app/images/logo.png";
+import { useSession, signOut } from "@/lib/auth-client";
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
@@ -15,7 +16,11 @@ const navLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-
+  const { data: session, isPending } = useSession();
+  console.log('session is runing', session)
+  const handleSignOut = async () =>{
+    await signOut()
+  }
   return (
     <header className="sticky top-0 z-50 w-full px-4 pt-4 sm:px-6">
       {/* Floating Container Matching Image Design */}
@@ -54,18 +59,34 @@ export function Navbar() {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-4">
-              <Link
-                href="/sign-in"
-                className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/sign-up"
-                className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition-opacity hover:opacity-90"
-              >
-                Get Started
-              </Link>
+              {isPending ? null : session ? (
+                <>
+                  <span className="text-sm font-medium text-zinc-300">
+                    Hi, {session.user.name}
+                  </span>
+                  <Button
+                    onClick={handleSignOut}
+                    className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/sign-in"
+                    className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition-opacity hover:opacity-90"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -103,20 +124,36 @@ export function Navbar() {
               ))}
             </ul>
             <div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4">
-              <Link
-                href="/sign-in"
-                className="w-full rounded-md px-4 py-2 text-left text-indigo-400 hover:bg-white/10 hover:text-indigo-300"
-                onClick={() => setOpen(false)}
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/sign-up"
-                className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-center text-sm font-medium text-white shadow-lg shadow-indigo-500/20 hover:from-blue-500 hover:to-indigo-500"
-                onClick={() => setOpen(false)}
-              >
-                Get Started
-              </Link>
+              {isPending ? null : session ? (
+                <>
+                  <span className="px-4 py-2 text-sm font-medium text-zinc-300">
+                    Hi, {session.user.name}
+                  </span>
+                  <Button
+                    className="w-full rounded-md px-4 py-2 text-left text-indigo-400 hover:bg-white/10 hover:text-indigo-300"
+                    onClick={handleSignOut}
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/sign-in"
+                    className="w-full rounded-md px-4 py-2 text-left text-indigo-400 hover:bg-white/10 hover:text-indigo-300"
+                    onClick={() => setOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-center text-sm font-medium text-white shadow-lg shadow-indigo-500/20 hover:from-blue-500 hover:to-indigo-500"
+                    onClick={() => setOpen(false)}
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

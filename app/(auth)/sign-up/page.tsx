@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+import { ROLES, ROLE_LABELS, type Role } from "@/lib/roles";
 import Link from "next/link";
 import type { FormEvent } from "react";
 
@@ -14,6 +15,8 @@ export default function SignUpPage() {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    // Radio group-er check kora role-ta; kono ta na thakle "seeker"
+    const role = (formData.get("role") ?? "seeker") as Role;
 
     //! Better-auth diye sign up call korlam
     //? Better-auth diye sign up call korlam
@@ -21,6 +24,7 @@ export default function SignUpPage() {
       name,
       email,
       password,
+      role,
       callbackURL: "/", // Sign up-er por kothay redirect hobe
     });
 
@@ -73,6 +77,27 @@ export default function SignUpPage() {
               className="w-full rounded-lg border border-white/15 bg-zinc-950 px-3 py-2.5 text-white outline-none focus:border-indigo-400"
             />
           </label>
+
+          <fieldset className="space-y-2 text-sm font-medium">
+            <legend>I am a...</legend>
+            <div className="grid grid-cols-3 gap-2">
+              {ROLES.map((role) => (
+                <label
+                  key={role}
+                  className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/15 bg-zinc-950 px-3 py-2.5 text-center font-normal text-white transition-colors has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-600/20"
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value={role}
+                    defaultChecked={role === "seeker"}
+                    className="size-3.5 accent-indigo-500"
+                  />
+                  {ROLE_LABELS[role]}
+                </label>
+              ))}
+            </div>
+          </fieldset>
 
           <button
             type="submit"
