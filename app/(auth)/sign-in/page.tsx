@@ -1,18 +1,42 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { FormEvent } from "react";
 
 export default function SignInPage() {
-  // Placeholder: collects the form data only.
-  // TODO: integrate auth later — e.g. signIn.email({ email, password }) from "@/lib/auth-client".
   const router = useRouter()
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.currentTarget));
-    console.log("sign-in form data:", data);
-    router.push("/")
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+
+    try {
+      const { error } = await authClient.signIn.email({ email, password });
+
+      if (error) {
+        setErrorMessage(error.message ?? "Unable to sign in. Please try again.");
+        return;
+      }
+
+      router.replace("/");
+      router.refresh();
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to sign in. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -24,6 +48,11 @@ export default function SignInPage() {
         </p>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+          {errorMessage && (
+            <p className="text-sm text-red-400" role="alert">
+              {errorMessage}
+            </p>
+          )}
           <label className="block space-y-2 text-sm font-medium">
             Email
             <input
@@ -48,9 +77,10 @@ export default function SignInPage() {
 
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 font-medium text-white transition-colors hover:bg-indigo-500"
           >
-            Sign In
+            {isSubmitting ? "Signing in..." : "Sign In"}
           </button>
         </form>
 

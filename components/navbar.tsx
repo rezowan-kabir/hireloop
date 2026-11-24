@@ -16,11 +16,34 @@ const navLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   const { data: session, isPending } = useSession();
-  console.log('session is runing', session)
-  const handleSignOut = async () =>{
-    await signOut()
+
+  async function handleSignOut() {
+    setIsSigningOut(true);
+    setSignOutError(null);
+
+    try {
+      const { error } = await signOut();
+
+      if (error) {
+        setSignOutError(
+          error.message ?? "Sign out failed. Please try again.",
+        );
+        return;
+      }
+
+      setOpen(false);
+    } catch (error) {
+      setSignOutError(
+        error instanceof Error ? error.message : "Sign out failed. Please try again.",
+      );
+    } finally {
+      setIsSigningOut(false);
+    }
   }
+
   return (
     <header className="sticky top-0 z-50 w-full px-4 pt-4 sm:px-6">
       {/* Floating Container Matching Image Design */}
@@ -66,9 +89,10 @@ export function Navbar() {
                   </span>
                   <Button
                     onClick={handleSignOut}
+                    disabled={isSigningOut}
                     className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
                   >
-                    Sign Out
+                    {isSigningOut ? "Signing out..." : "Sign Out"}
                   </Button>
                 </>
               ) : (
@@ -104,6 +128,12 @@ export function Navbar() {
           </Button>
         </nav>
 
+        {signOutError && (
+          <p className="pb-3 text-sm text-red-400" role="alert">
+            {signOutError}
+          </p>
+        )}
+
         {/* Mobile Menu Dropdown */}
         {open && (
           <div
@@ -132,8 +162,9 @@ export function Navbar() {
                   <Button
                     className="w-full rounded-md px-4 py-2 text-left text-indigo-400 hover:bg-white/10 hover:text-indigo-300"
                     onClick={handleSignOut}
+                    disabled={isSigningOut}
                   >
-                    Sign Out
+                    {isSigningOut ? "Signing out..." : "Sign Out"}
                   </Button>
                 </>
               ) : (
